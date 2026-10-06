@@ -1,16 +1,3 @@
-Bas! *Masla mil gaya!* Dekho aap ke screenshot me:
-
-*`39 lines (39 loc) · 1.09 KB`*
-
-Ye ghalat hai! Sahi wala code *60-65 lines* ka hona chahiye. Aap ka code aadha hai, is liye Red Cross ❌ aa raha hai.
-
-Aap ne jo WhatsApp wala code paste kiya tha, wo 39 lines ka toota hua code hai.
-
-*Ab Final Fix, 1 minute ka kaam:*
-
-1. Isi page par upar *Pencil ✏️ icon* par click karo (edit)
-2. *Ctrl + A* se sab select karke *Delete* karo - page khali karo
-3. *Laptop par is chat se DIRECT copy karo* - WhatsApp forward mat karo. Laptop par `web.whatsapp.com` kholo aur ye code copy karo:
 name: Build AAB
 on: [push]
 jobs:
@@ -63,8 +50,3 @@ jobs:
         with:
           name: SENTINEL-AAB-FINAL
           path: bin/*.aab
-4. Paste karke neeche *Commit changes* dabao.
-
-Commit ke baad *Actions* tab par jao, wahan *Yellow dot 🟡* wala build start ho jayega. 30 min me Green Tick ✅ aayega.
-
-Paste karke batao, kitni lines aayi? 60+ aani chahiye.
