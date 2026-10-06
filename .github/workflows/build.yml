@@ -1,58 +1,44 @@
-name: Build AAB
-on: [push]
+name: Build AAB Final
+
+on:
+  push:
+    branches: [ main ]
+
 jobs:
   build:
     runs-on: ubuntu-22.04
+    
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Python 3.10
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - name: Install Packages
+
+      - name: Install System Tools
         run: |
-          sudo apt update
-          sudo apt install -y zip unzip openjdk-17-jdk python3-pip libffi-dev libssl-dev
-          pip install buildozer cython==0.29.33
-      - name: Fix Build Tools
+          sudo apt-get update
+          sudo apt-get install -y python3-pip zip unzip openjdk-17-jdk libffi-dev libssl-dev libltdl-dev
+
+      - name: Install Buildozer
         run: |
-          mkdir -p $HOME/.android
-          touch $HOME/.android/repositories.cfg
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "build-tools;34.0.0" "build-tools;33.0.2" "platforms;android-34" "platform-tools"
-          # Buildozer apna khud ka SDK download karta hai, uske liye bhi licenses
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-      - name: Create Spec
+          pip3 install --upgrade pip
+          pip3 install buildozer==1.5.0 cython==0.29.33 virtualenv
+
+      - name: Build AAB - Final Attempt
         run: |
-          cat > buildozer.spec << 'EOF'
-          [app]
-          title = SENTINEL
-          package.name = sentinel
-          package.domain = com.ahmad.sentinel
-          source.dir =.
-          source.include_exts = py,png,jpg,kv,json
-          version = 1.0
-          requirements = python3,kivy==2.3.0,numpy,pillow,opencv-python
-          orientation = portrait
-          android.permissions = CAMERA,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE,INTERNET
-          android.api = 34
-          android.minapi = 21
-          android.ndk = 25b
-          android.build_tools_version = 34.0.0
-          android.accept_sdk_license_agreements = True
-          android.release_artifact = aab
-          p4a.branch = master
-          [buildozer]
-          log_level = 2
-          EOF
-      - name: Build AAB
-        run: |
-          yes | buildozer android release || true
-          # Agar pehli baar me license ki wajah se fail ho to dobara
-          yes | buildozer android release
-      - name: Upload AAB
+          yes | buildozer android appbundle debug || (sleep 15 && yes | buildozer android appbundle debug)
+
+      - name: Upload Final AAB
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: SENTINEL-AAB-FINAL
+          name: SENTINEL-FINAL-AAB
           path: bin/*.aab
