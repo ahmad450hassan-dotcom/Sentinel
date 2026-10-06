@@ -18,8 +18,11 @@ jobs:
         run: |
           mkdir -p $HOME/.android
           touch $HOME/.android/repositories.cfg
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "build-tools;34.0.0" "platforms;android-34" || true
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "build-tools;34.0.0" "build-tools;33.0.2" "platforms;android-34" "platform-tools"
+          # Buildozer apna khud ka SDK download karta hai, uske liye bhi licenses
+          mkdir -p ~/.android
+          touch ~/.android/repositories.cfg
       - name: Create Spec
         run: |
           cat > buildozer.spec << 'EOF'
@@ -35,16 +38,19 @@ jobs:
           android.permissions = CAMERA,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE,INTERNET
           android.api = 34
           android.minapi = 21
-   
           android.ndk = 25b
           android.build_tools_version = 34.0.0
           android.accept_sdk_license_agreements = True
           android.release_artifact = aab
+          p4a.branch = master
           [buildozer]
           log_level = 2
           EOF
       - name: Build AAB
-        run: buildozer android release
+        run: |
+          yes | buildozer android release || true
+          # Agar pehli baar me license ki wajah se fail ho to dobara
+          yes | buildozer android release
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
