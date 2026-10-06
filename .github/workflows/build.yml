@@ -35,7 +35,7 @@ jobs:
           android.permissions = CAMERA,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE,INTERNET
           android.api = 34
           android.minapi = 21
-          android.sdk = 34
+   
           android.ndk = 25b
           android.build_tools_version = 34.0.0
           android.accept_sdk_license_agreements = True
