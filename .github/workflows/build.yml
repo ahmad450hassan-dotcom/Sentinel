@@ -1,24 +1,40 @@
-name: Build APK
+name: build
 on: [push]
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
       - name: Install Dependencies
         run: |
-          sudo apt update -y
-          sudo apt install -y openjdk-17-jdk python3-pip zip unzip libtinfo5 libncurses5
-          pip install --upgrade pip
-          pip install buildozer cython==0.29.33
+          sudo apt update
+          sudo apt install -y zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev libltdl-dev
 
-      - name: Build APK
+      - name: Install Buildozer
         run: |
-          buildozer -v android debug
+          pip install --upgrade pip
+          pip install buildozer cython==0.29.36
 
-      - name: Upload APK
+      - name: Accept Android Licenses
+        run: |
+          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
+          echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+          echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+          echo "24333f8a63b6825ea9c5514f83c1059b8ea" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
+
+      - name: Build AAB
+        run: |
+          rm -rf ~/.buildozer/android/platform/android-ndk-r28c
+          buildozer android appbundle --verbose
+
+      - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
-          name: Sentinel-APK
-          path: bin/*.apk
+          name: Sentinel-AAB
+          path: bin/*.aab
