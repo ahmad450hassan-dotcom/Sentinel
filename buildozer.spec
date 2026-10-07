@@ -12,13 +12,12 @@ orientation = portrait
 log_level = 2
 
 [app:android]
-android.api = 33
+android.api = 34
 android.minapi = 21
-android.ndk = 25b
-android.build_tools_version = 33.0.2
-android.sdk_version = 33
+android.ndk = 28c
+android.sdk_version = 34
+android.build_tools_version = 34.0.0
 android.accept_sdk_license_agreement = True
-
 android.archs = arm64-v8a, armeabi-v7a
 android.permissions = INTERNET
 android.release_artifact = aab
