@@ -18,7 +18,7 @@ android.ndk = 25b
 android.build_tools_version = 33.0.2
 android.sdk_version = 33
 android.accept_sdk_license_agreement = True
-p4a.branch = master
+
 android.archs = arm64-v8a, armeabi-v7a
 android.permissions = INTERNET
 android.release_artifact = aab
